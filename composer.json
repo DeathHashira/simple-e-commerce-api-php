@@ -1,0 +1,23 @@
+{
+    "name": "hashira/intermediate-e-commerce-api",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "DeathHashira",
+            "email": "shabanid.zahra@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Src\\": "src/",
+            "Controllers\\": "Controllers/",
+            "Model\\": "model/",
+            "App\\": "app/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "doctrine/migrations": "^3.9",
+        "vlucas/phpdotenv": "^5.7"
+    }
+}
