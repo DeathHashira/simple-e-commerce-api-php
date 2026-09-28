@@ -8,7 +8,7 @@ use PDOStatement;
 class BaseRepository
 {
     protected string $tableName = '';
-    
+
     public function __construct(
         private PDO $conn
     ) {}
@@ -18,7 +18,17 @@ class BaseRepository
         $statement = $this->conn->prepare("SELECT * FROM $this->tableName WHERE id=:id");
         $statement->bindValue(":id", $id);
         $statement->execute();
-        
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function readByCondition(array $condition): array
+    {
+        $conString = implode(" AND ", array_map(function($key) {return "$key=:$key";}, array_keys($condition)));
+        $statement = $this->conn->prepare("SELECT * FROM $this->tableName WHERE $conString");
+        $this->bindValues($statement, $condition);
+        $statement->execute();
+
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -26,7 +36,7 @@ class BaseRepository
     {
         $statement = $this->conn->prepare("SELECT * FROM $this->tableName");
         $statement->execute();
-        
+
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -34,7 +44,7 @@ class BaseRepository
     {
         $keys = implode(", ", array_keys($data));
         $values = implode(", ", array_map(function($key) {return ":$key";}, array_keys($data)));
-        
+
         $statement = $this->conn->prepare("INSERT INTO TABLE $this->tableName ($keys) VALUES ($values)");
         $this->bindValues($statement, $data);
 
@@ -59,7 +69,7 @@ class BaseRepository
         return $statement->execute();
     }
 
-    private function bindValues(PDOStatement $stmnt, array $data)
+    protected function bindValues(PDOStatement $stmnt, array $data)
     {
         foreach ($data as $key => $value) {
             $stmnt->bindValue(":".$key, $value);

@@ -7,7 +7,7 @@ class Response
     public function __construct(
         private int $statusCode = 200,
         private array $headers = [],
-        private mixed $content
+        private string $content = null
     ) {}
 
     public function getStatusCode(): int
@@ -22,7 +22,7 @@ class Response
 
     public function getContent(): mixed
     {
-        return $this->content;
+        return json_decode($this->content);
     }
 
     public function setStatusCode(int $statusCode): void
@@ -37,7 +37,7 @@ class Response
 
     public function setContent(mixed $body): void
     {
-        $this->content = $body;
+        $this->content = json_encode($body);
     }
 
     public function send(): void

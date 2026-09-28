@@ -14,7 +14,10 @@ class Database
         private string $dbUser,
         private string $dbPass
     ) {
-        $this->conn = new PDO("mysql:host=$this->dbHost;dbname=$this->dbName", $this->dbUser, $this->dbPass);
+        $this->conn = new PDO("mysql:host=$this->dbHost;dbname=$this->dbName",
+            $this->dbUser,
+            $this->dbPass,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     }
 
     public static function createFromEnv(): self

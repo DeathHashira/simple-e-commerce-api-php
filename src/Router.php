@@ -9,6 +9,12 @@ class Router
         "post" => []
     ];
 
+    private static function add(string $method, string $path, callable $handler, string $middleware=""): self
+    {
+        Router::$routes[$method][$path] = [$handler, $middleware];
+        return $this;
+    }
+
     public static function getPath(): string
     {
         return parse_url($_SERVER["REQUEST_URI"])["path"];
@@ -18,26 +24,30 @@ class Router
     {
         return strtolower($_SERVER["REQUEST_METHOD"]);
     }
-    
+
     /**
      * @param callable(): mixed $handler
      */
-    public static function get(string $path, callable $handler): void
+    public static function get(string $path, callable $handler, string $middleware=""): self
     {
-        Router::$routes["get"][$path] = $handler;
+        return Router::add("get", $path, $handler, $middleware);
     }
-    
+
     /**
      * @param callable(): mixed $handler
      */
-    public static function post(string $path, callable $handler): void
+    public static function post(string $path, callable $handler, string $middleware=""): self
     {
-        Router::$routes["post"][$path] = $handler;
+        return Router::add("post", $path, $handler, $middleware);
     }
 
     public static function run(): void
     {
-        $handler = Router::$routes[Router::getMethod()][Router::getPath()] ?? null;
+        [$handler, $middleware] = Router::$routes[Router::getMethod()][Router::getPath()];
+        if (!empty($middleware)) {
+            $mvHandler = MiddlewareRegistry::resolve($middleware);
+            mvHandler();
+        }
         if (is_callable($handler)) {
             $handler();
         }

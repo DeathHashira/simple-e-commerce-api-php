@@ -12,12 +12,16 @@
             "Src\\": "src/",
             "Controllers\\": "Controllers/",
             "Model\\": "model/",
-            "App\\": "app/"
+            "App\\": "app/",
+            "Middleware\\": "middleware/",
+            "Security\\": "security/",
+            "Services\\": "services/"
         }
     },
     "minimum-stability": "stable",
     "require": {
         "doctrine/migrations": "^3.9",
-        "vlucas/phpdotenv": "^5.7"
+        "vlucas/phpdotenv": "^5.7",
+        "firebase/php-jwt": "^7.2"
     }
 }

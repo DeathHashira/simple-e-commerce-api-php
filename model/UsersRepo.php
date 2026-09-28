@@ -11,4 +11,16 @@ class UsersRepo extends BaseRepository
         parent::__construct($conn);
         $this->tableName = "users";
     }
+
+    public function adminAccess(int $id): bool
+    {
+        return $this->updateById($id, [
+            "admin_access" => trun
+        ]);
+    }
+
+    public function lastUserId(): int
+    {
+        return $this->conn->lastInsertId();
+    }
 }
