@@ -7,7 +7,7 @@ class Response
     public function __construct(
         private int $statusCode = 200,
         private array $headers = [],
-        private string $content = null
+        private string $content = ''
     ) {}
 
     public function getStatusCode(): int
@@ -25,19 +25,22 @@ class Response
         return json_decode($this->content);
     }
 
-    public function setStatusCode(int $statusCode): void
+    public function setStatusCode(int $statusCode): self
     {
         $this->statusCode = $statusCode;
+        return $this;
     }
 
-    public function setHeader(string $name, string $value): void
+    public function setHeader(string $name, string $value): self
     {
         $this->headers[$name] = $value;
+        return $this;
     }
 
-    public function setContent(mixed $body): void
+    public function setContent(mixed $body): self
     {
         $this->content = json_encode($body);
+        return $this;
     }
 
     public function send(): void

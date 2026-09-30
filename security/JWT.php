@@ -19,8 +19,8 @@ class JWT
     {
         $key = JWT::loadSecretFromEnv();
         $payload = FirebaseJWT::decode($token, new Key($key, "HS256"));
-
-        return json_decode($payload, true);
+        
+        return (array) $payload;
     }
 
     private static function loadSecretFromEnv(): string

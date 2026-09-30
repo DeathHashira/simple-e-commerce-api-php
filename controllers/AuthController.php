@@ -10,9 +10,11 @@ use Src\Controller;
 class AuthController extends Controller
 {
    public function __construct(
-        private Request $request,
+        $request,
         private AuthService $authService
-   ) {}
+   ) {
+       parent::__construct($request);
+   }
 
    public function registerNewUser(): Response
    {
@@ -27,8 +29,7 @@ class AuthController extends Controller
            ->setContent([
                "access_token" => $result["token"]
            ])
-           ->setHeader("Content-type", "application/json")
-           ->setHeader("Location", "/");
+           ->setHeader("Content-type", "application/json");
        } else {
            return (new Response)
            ->setStatusCode(400);
@@ -45,8 +46,7 @@ class AuthController extends Controller
            ->setContent([
                "access_token" => $result["token"]
            ])
-           ->setHeader("Content-type", "application/json")
-           ->setHeader("Location", "/");
+           ->setHeader("Content-type", "application/json");
        } else {
            return (new Response())
            ->setStatusCode(400);

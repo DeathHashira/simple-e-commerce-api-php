@@ -15,12 +15,7 @@ class UsersRepo extends BaseRepository
     public function adminAccess(int $id): bool
     {
         return $this->updateById($id, [
-            "admin_access" => trun
+            "admin_access" => true
         ]);
-    }
-
-    public function lastUserId(): int
-    {
-        return $this->conn->lastInsertId();
     }
 }

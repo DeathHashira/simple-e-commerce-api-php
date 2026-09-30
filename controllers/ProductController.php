@@ -34,7 +34,7 @@ class ProductController extends Controller
    public function deleteProduct(): Response
    {
        $token = $this->getToken();
-       [$productId] = $this->parseElements($this->request->postBody(), ["product_id"]);
+       [$productId] = $this->parseElements($this->request->postBody(), ["id"]);
        $result = $this->admingService->deleteProductById($token, $productId);
 
        if ($result["successful"]) {
@@ -48,7 +48,7 @@ class ProductController extends Controller
    public function updateProduct(): Response
    {
        $token = $this->getToken();
-       $data = $this->parseElements($this->request->postBody(), array_keys($this->request->postBody()));
+       $data = $this->request->postBody();
        $result = $this->admingService->updateProductById($token, $data);
 
        if ($result["successful"]) {

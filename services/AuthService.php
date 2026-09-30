@@ -20,10 +20,10 @@ class AuthService extends Service
             "password" => password_hash($password, PASSWORD_DEFAULT)
         ];
 
-        $id = $this->usersRepo->lastUserId();
-        $adminAccess = $this->usersRepo->readById($id)["admin_access"];
+        $id = $this->usersRepo->create($data);
+        $adminAccess = ($this->usersRepo->readById($id)[0]["admin_access"] == 1) ? true : false;
 
-        if ($this->usersRepo->create($data)) {
+        if ($id) {
             return [
                 "successful" => true,
                 "token" => $this->createToken($id, $adminAccess)
@@ -37,7 +37,7 @@ class AuthService extends Service
 
     public function login(string $email, string $password): array
     {
-       $userInfo = $this->usersRepo->readByCondition(["email" => $email])["password"];
+       $userInfo = $this->usersRepo->readByCondition(["email" => $email])[0];
        $hash = $userInfo["password"];
        $id = $userInfo["id"];
        $adminAccess = $userInfo["admin_access"];

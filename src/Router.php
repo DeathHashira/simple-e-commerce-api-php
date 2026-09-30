@@ -2,17 +2,20 @@
 
 namespace Src;
 
+use App\Http\Request;
+
 class Router
 {
     private static array $routes = [
         "get" => [],
         "post" => []
     ];
-
-    private static function add(string $method, string $path, callable $handler, string $middleware=""): self
+    /**
+     * @param callable(): mixed $handler
+     */
+    private static function add(string $method, string $path, callable $handler, string $middleware=""): void
     {
-        Router::$routes[$method][$path] = [$handler, $middleware];
-        return $this;
+       Router::$routes[$method][$path] = [$handler, $middleware];
     }
 
     public static function getPath(): string
@@ -28,28 +31,31 @@ class Router
     /**
      * @param callable(): mixed $handler
      */
-    public static function get(string $path, callable $handler, string $middleware=""): self
+    public static function get(string $path, callable $handler, string $middleware=""): void
     {
-        return Router::add("get", $path, $handler, $middleware);
+        Router::add("get", $path, $handler, $middleware);
     }
 
     /**
      * @param callable(): mixed $handler
      */
-    public static function post(string $path, callable $handler, string $middleware=""): self
+    public static function post(string $path, callable $handler, string $middleware=""): void
     {
-        return Router::add("post", $path, $handler, $middleware);
+        Router::add("post", $path, $handler, $middleware);
     }
 
-    public static function run(): void
+    public static function run(Request $request): void
     {
         [$handler, $middleware] = Router::$routes[Router::getMethod()][Router::getPath()];
         if (!empty($middleware)) {
             $mvHandler = MiddlewareRegistry::resolve($middleware);
-            mvHandler();
-        }
-        if (is_callable($handler)) {
-            $handler();
+            if (is_callable($handler)) {
+                $mvHandler($request, $handler);
+            }
+        } else {
+            if (is_callable($handler)) {
+                $handler();
+            }
         }
     }
 }

@@ -7,17 +7,15 @@ use App\Http\Response;
 
 class Auth
 {
-    public function __construct(
-        public Request $request
-    ) {}
-
-    public function handle()
+    public static function handle(Request $request, callable $next): void
     {
-        $headers = $this->request->getHeaders();
+        $headers = $request->getHeaders();
         if (empty($headers["Authorization"])) {
             (new Response())
             ->setStatusCode(401)
             ->send();
+        } else {
+            $next();
         }
     }
 }

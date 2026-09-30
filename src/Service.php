@@ -20,12 +20,12 @@ class Service
         ];
     }
 
-    protected function validateToken($token): array
+    protected function validateToken(string $token): array
     {
         try {
             $payload = JWT::decode($token);
             $result = ["successful" => true];
-            $result[] = $this->parseToken($payload);
+            $result += $this->parseToken($payload);
 
             return $result;
 

@@ -10,7 +10,7 @@ class BaseRepository
     protected string $tableName = '';
 
     public function __construct(
-        private PDO $conn
+        protected PDO $conn
     ) {}
 
     public function readById(int $id): array
@@ -40,15 +40,19 @@ class BaseRepository
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function create(array $data): bool
+    public function create(array $data): bool|int
     {
         $keys = implode(", ", array_keys($data));
         $values = implode(", ", array_map(function($key) {return ":$key";}, array_keys($data)));
-
-        $statement = $this->conn->prepare("INSERT INTO TABLE $this->tableName ($keys) VALUES ($values)");
+        
+        $statement = $this->conn->prepare("INSERT INTO $this->tableName ($keys) VALUES ($values)");
         $this->bindValues($statement, $data);
 
-        return $statement->execute();
+        if ($statement->execute()) {
+            return $this->lastGeneratedId();
+        } else {
+            return false;
+        }
     }
 
     public function deleteById(int $id): bool
@@ -79,5 +83,10 @@ class BaseRepository
     private function formatSet(array $data): string
     {
         return implode(", ", array_map(function($key) {return "$key=:$key";}, array_keys($data)));
+    }
+
+    public function lastGeneratedId(): int
+    {
+        return $this->conn->lastInsertId();
     }
 }

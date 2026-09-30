@@ -23,7 +23,8 @@ class CartService extends Service
            "product_id" => $productId
        ];
 
-       if ($this->cartRepo->create($data)) {
+       $id = $this->cartRepo->create($data);
+       if ($id === 0) {
            return [
                "successful" => true
            ];
